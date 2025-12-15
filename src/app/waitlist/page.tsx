@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Mail, CheckCircle2, Sparkles, Zap, ArrowRight } from "lucide-react";
+import { Mail, User, CheckCircle2, Sparkles, Zap, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function WaitlistPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,13 +24,14 @@ export default function WaitlistPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ name, email }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         setSubmitted(true);
+        setName("");
         setEmail("");
       } else {
         setMessage(data.error || "Something went wrong. Please try again.");
@@ -72,6 +74,23 @@ export default function WaitlistPage() {
               className="glass-card rounded-3xl p-8 md:p-12 max-w-2xl mx-auto"
             >
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      type="text"
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      placeholder="John Doe"
+                      className="w-full pl-12 pr-4 py-4 bg-background/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                     Email Address

@@ -7,7 +7,15 @@ import { eq, desc } from "drizzle-orm";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email } = body;
+    const { name, email } = body;
+
+    // Validate name (required for new entries)
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      return NextResponse.json(
+        { error: "Name is required" },
+        { status: 400 }
+      );
+    }
 
     // Validate email
     if (!email || typeof email !== "string") {
@@ -43,6 +51,7 @@ export async function POST(request: NextRequest) {
 
     // Save to waitlist
     await db.insert(waitlist).values({
+      name: name.trim(),
       email: normalizedEmail,
     });
 
@@ -73,6 +82,7 @@ export async function GET() {
     const entries = await db.select().from(waitlist).orderBy(desc(waitlist.createdAt));
     return NextResponse.json({ 
       entries: entries.map(entry => ({
+        name: entry.name,
         email: entry.email,
         createdAt: entry.createdAt?.toISOString(),
       })), 

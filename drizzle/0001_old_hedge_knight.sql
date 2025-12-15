@@ -1,0 +1,1 @@
+ALTER TABLE `waitlist` ADD `name` text NOT NULL;

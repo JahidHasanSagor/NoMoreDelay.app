@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
 import {
   Zap,
   Mic,
@@ -78,6 +80,121 @@ const stats = [
   { value: "Beta", label: "Status" },
   { value: "Free", label: "Early Access" },
 ];
+
+// Mobile Screen Mock Component with Image Fallback
+function MobileScreenMock() {
+  const [imageExists, setImageExists] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    // Check if image exists by trying to load it
+    const img = new window.Image();
+    img.onload = () => setImageExists(true);
+    img.onerror = () => setImageError(true);
+    img.src = "/app_screen/boss_chat.png";
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="flex justify-center lg:justify-end"
+    >
+      <div className="relative w-full max-w-[280px] lg:max-w-[320px] transform perspective-1000">
+        {/* iPhone Frame */}
+        <div className="relative bg-gray-200 dark:bg-gray-800 rounded-[3rem] p-1 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.05)] transform hover:scale-[1.02] transition-transform duration-300">
+          {/* Screen Container */}
+          <div className="relative bg-card rounded-[2.5rem] overflow-hidden" style={{ aspectRatio: "9/19.5" }}>
+            {imageExists && !imageError ? (
+              // Show image if it exists - properly fitted to iPhone screen
+              <div className="absolute inset-0 w-full h-full">
+                <Image
+                  src="/app_screen/boss_chat.png"
+                  alt="NoMoreDelay App Screenshot"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 280px, 320px"
+                />
+              </div>
+            ) : (
+              // Show mock if image doesn't exist
+              <div className="h-full flex flex-col">
+                {/* Status Bar */}
+                <div className="bg-secondary/50 px-6 py-2 flex items-center justify-between border-b border-border/50">
+                  <span className="text-xs text-foreground font-medium">22:08</span>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-3 border border-foreground/30 rounded-sm">
+                      <div className="w-full h-full bg-foreground/20 rounded-sm" />
+                    </div>
+                    <div className="w-1 h-1 bg-foreground/40 rounded-full" />
+                  </div>
+                </div>
+
+                <div className="flex-1 px-4 py-6 space-y-4 overflow-auto">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                      <Zap className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                    <div className="glass-card rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
+                      <p className="text-sm text-foreground">
+                        Good morning! You have 3 tasks due today. Let&apos;s crush them
+                        together. Which one do you want to tackle first?
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 justify-end">
+                    <div className="bg-primary/20 rounded-2xl rounded-tr-none px-4 py-3 max-w-[75%]">
+                      <p className="text-sm text-foreground">
+                        Let&apos;s start with the project proposal. I&apos;ve been putting
+                        it off for too long.
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                      <Users className="w-5 h-5 text-foreground" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                      <Zap className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                    <div className="glass-card rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
+                      <p className="text-sm text-foreground">
+                        Great choice! I&apos;ve started a 25-minute focus timer. No
+                        distractions - you&apos;ve got this! 💪
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-secondary/50 px-4 py-3 border-t border-border/50">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-background/50 rounded-full px-4 py-2">
+                      <span className="text-xs text-muted-foreground">Type a message...</span>
+                    </div>
+                    <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+                      <Mic className="w-4 h-4 text-primary-foreground" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Floating glow effects */}
+        <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl -z-10" />
+        <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-orange-500/20 rounded-full blur-2xl -z-10" />
+        
+        {/* Shadow underneath phone */}
+        <div className="absolute inset-0 top-4 bg-black/20 rounded-[3rem] blur-xl -z-20" />
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Home() {
   return (
@@ -158,76 +275,7 @@ export default function Home() {
             </motion.div>
 
             {/* Mobile Mock - Right Side */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex justify-center lg:justify-end"
-            >
-              <div className="relative max-w-sm w-full">
-                <div className="glass-card rounded-[3rem] p-3 shadow-2xl">
-                  <div className="bg-card rounded-[2.5rem] overflow-hidden aspect-[9/19]">
-                    <div className="h-full flex flex-col">
-                      <div className="bg-secondary/50 px-6 py-4 flex items-center justify-center border-b border-border/50">
-                        <div className="w-20 h-6 bg-background/50 rounded-full" />
-                      </div>
-
-                      <div className="flex-1 px-4 py-6 space-y-4 overflow-auto">
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                            <Zap className="w-5 h-5 text-primary-foreground" />
-                          </div>
-                          <div className="glass-card rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
-                            <p className="text-sm text-foreground">
-                              Good morning! You have 3 tasks due today. Let&apos;s crush them
-                              together. Which one do you want to tackle first?
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3 justify-end">
-                          <div className="bg-primary/20 rounded-2xl rounded-tr-none px-4 py-3 max-w-[75%]">
-                            <p className="text-sm text-foreground">
-                              Let&apos;s start with the project proposal. I&apos;ve been putting
-                              it off for too long.
-                            </p>
-                          </div>
-                          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
-                            <Users className="w-5 h-5 text-foreground" />
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                            <Zap className="w-5 h-5 text-primary-foreground" />
-                          </div>
-                          <div className="glass-card rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
-                            <p className="text-sm text-foreground">
-                              Great choice! I&apos;ve started a 25-minute focus timer. No
-                              distractions - you&apos;ve got this! 💪
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-secondary/50 px-4 py-3 border-t border-border/50">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 bg-background/50 rounded-full px-4 py-2">
-                            <span className="text-xs text-muted-foreground">Type a message...</span>
-                          </div>
-                          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-                            <Mic className="w-4 h-4 text-primary-foreground" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl" />
-                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-orange-500/20 rounded-full blur-2xl" />
-              </div>
-            </motion.div>
+            <MobileScreenMock />
           </div>
         </div>
       </section>
