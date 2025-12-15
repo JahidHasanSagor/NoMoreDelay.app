@@ -1,0 +1,23 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # Install dependencies
+        - npm ci
+        # Optional: Run database migrations during build (uncomment if needed)
+        # - npm run db:push
+    build:
+      commands:
+        # Build Next.js application
+        - npm run build
+  artifacts:
+    # Next.js 15 App Router output directory
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
+
