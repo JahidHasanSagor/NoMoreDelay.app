@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate email
+    // Validate 300email
     if (!email || typeof email !== "string") {
       return NextResponse.json(
         { error: "Email is required" },
