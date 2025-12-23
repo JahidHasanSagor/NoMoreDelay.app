@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -10,7 +10,7 @@ const API_BASE_URL = "https://api.nomoredelay.app/api";
 
 type ViewState = "form" | "success" | "no-token";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const [viewState, setViewState] = useState<ViewState>("form");
   const [password, setPassword] = useState("");
@@ -264,6 +264,35 @@ export default function ResetPasswordPage() {
         )}
       </motion.div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 flex items-center justify-center p-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-md w-full p-10 md:p-12 text-center"
+          >
+            <div className="mb-8 text-center">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
+                NoMoreDelay
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                Your AI Accountability Partner
+              </p>
+            </div>
+            <Loader2 className="w-16 h-16 mx-auto mb-6 text-purple-600 animate-spin" />
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          </motion.div>
+        </div>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
 
