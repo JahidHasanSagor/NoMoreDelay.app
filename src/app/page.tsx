@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import {
   Mic,
   CheckCircle2,
@@ -83,96 +82,91 @@ const fadeUp = {
   transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
 };
 
-// Mobile Screen Mock Component with Image Fallback
-function MobileScreenMock() {
-  const [imageExists, setImageExists] = useState(false);
-  const [imageError, setImageError] = useState(false);
+type ShowcasePhone = {
+  src: string;
+  alt: string;
+  role: "left" | "center" | "right";
+  delay: number;
+  floatDuration: number;
+};
 
-  useEffect(() => {
-    const img = new window.Image();
-    img.onload = () => setImageExists(true);
-    img.onerror = () => setImageError(true);
-    img.src = "/app_screen/boss_chat.png";
-  }, []);
+const showcasePhones: ShowcasePhone[] = [
+  {
+    src: "/app_screen/boss_calling.png",
+    alt: "Voice call with your AI Boss",
+    role: "left",
+    delay: 0.32,
+    floatDuration: 7,
+  },
+  {
+    src: "/app_screen/task_screen.png",
+    alt: "Daily task list with your AI Boss",
+    role: "center",
+    delay: 0.12,
+    floatDuration: 6,
+  },
+  {
+    src: "/app_screen/boss_chat.png",
+    alt: "Chat conversation with your AI Boss",
+    role: "right",
+    delay: 0.46,
+    floatDuration: 8,
+  },
+];
 
+function HeroShowcase() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="flex justify-center"
-    >
-      <div className="relative w-full max-w-[300px]">
-        <div className="relative bg-[#1D1D1F] rounded-[3rem] p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)]">
-          <div className="relative bg-card rounded-[2.5rem] overflow-hidden" style={{ aspectRatio: "9/19.5" }}>
-            {imageExists && !imageError ? (
-              <div className="absolute inset-0 w-full h-full">
-                <Image
-                  src="/app_screen/boss_chat.png"
-                  alt="NoMoreDelay App Screenshot"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="300px"
-                />
-              </div>
-            ) : (
-              <div className="h-full flex flex-col">
-                <div className="bg-secondary px-6 py-2 flex items-center justify-between">
-                  <span className="text-xs text-foreground font-medium">9:41</span>
-                  <div className="w-4 h-3 border border-foreground/30 rounded-sm" />
-                </div>
-
-                <div className="flex-1 px-4 py-6 space-y-4 overflow-auto">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center shrink-0">
-                      <Sparkles className="w-4 h-4 text-background" />
-                    </div>
-                    <div className="bg-secondary rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
-                      <p className="text-sm text-foreground">
-                        Good morning! You have 3 tasks due today. Which one do you
-                        want to tackle first?
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 justify-end">
-                    <div className="bg-foreground rounded-2xl rounded-tr-none px-4 py-3 max-w-[75%]">
-                      <p className="text-sm text-background">
-                        Let&apos;s start with the project proposal.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center shrink-0">
-                      <Sparkles className="w-4 h-4 text-background" />
-                    </div>
-                    <div className="bg-secondary rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
-                      <p className="text-sm text-foreground">
-                        Great choice. Starting a 25-minute focus timer — no
-                        distractions.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-secondary px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-background rounded-full px-4 py-2">
-                      <span className="text-xs text-muted-foreground">Type a message...</span>
-                    </div>
-                    <div className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center">
-                      <Mic className="w-4 h-4 text-background" />
-                    </div>
-                  </div>
+    <div className="flex items-end justify-center">
+      {showcasePhones.map((phone) => {
+        const isCenter = phone.role === "center";
+        return (
+          <motion.div
+            key={phone.src}
+            initial={{ opacity: 0, y: 56 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: phone.delay, ease: [0.16, 1, 0.3, 1] }}
+            className={
+              isCenter
+                ? "relative z-20 w-[230px] sm:w-[270px]"
+                : "hidden sm:block relative z-10 w-[170px] sm:w-[195px] mb-4 opacity-90" +
+                  (phone.role === "left" ? " -mr-6 sm:-mr-10" : " -ml-6 sm:-ml-10")
+            }
+          >
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{
+                duration: phone.floatDuration,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className={
+                isCenter
+                  ? ""
+                  : phone.role === "left"
+                    ? "rotate-[-8deg]"
+                    : "rotate-[8deg]"
+              }
+            >
+              <div className="relative bg-[#1D1D1F] rounded-[2.75rem] p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.28)]">
+                <div
+                  className="relative rounded-[2.25rem] overflow-hidden"
+                  style={{ aspectRatio: "9/19.5" }}
+                >
+                  <Image
+                    src={phone.src}
+                    alt={phone.alt}
+                    fill
+                    className="object-cover"
+                    priority={isCenter}
+                    sizes="(max-width: 640px) 230px, 270px"
+                  />
                 </div>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
+            </motion.div>
+          </motion.div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -216,7 +210,7 @@ export default function Home() {
         </div>
 
         <div className="mt-16 md:mt-20">
-          <MobileScreenMock />
+          <HeroShowcase />
         </div>
       </section>
 
